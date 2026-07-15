@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class CarExceptionHandler {
     public ResponseEntity<String> handleCarNotFoundException(CarNotFoundException exception) {
+        log.error(exception.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
     }
 }
