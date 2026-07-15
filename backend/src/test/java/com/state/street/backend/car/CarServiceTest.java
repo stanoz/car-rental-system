@@ -115,7 +115,7 @@ public class CarServiceTest {
     }
 
     @Test
-    void getCarByIdShouldThrowCarNotFoundExceptionWhenCarNotFound() throws CarNotFoundException {
+    void getCarByIdShouldThrowCarNotFoundExceptionWhenCarNotFound() {
         when(carRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(CarNotFoundException.class, () -> carService.getCarById(1L));
