@@ -37,8 +37,8 @@ public class Reservation {
     private User user;
 
     @Column(nullable = false)
-    private LocalDateTime startDate;
+    private LocalDateTime startDateTime;
 
     @Column(nullable = false)
-    private LocalDateTime endDate;
+    private LocalDateTime endDateTime;
 }
