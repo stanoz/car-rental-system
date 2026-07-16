@@ -12,6 +12,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Objects;
+
 @Entity(name = "users")
 @Builder
 @AllArgsConstructor
@@ -37,4 +39,15 @@ public class User {
 
     @Column(nullable = false)
     private String phoneNumber;
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof User user)) return false;
+        return Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(drivingLicenseId, user.drivingLicenseId) && Objects.equals(emailAddress, user.emailAddress) && Objects.equals(phoneNumber, user.phoneNumber);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(firstName, lastName, drivingLicenseId, emailAddress, phoneNumber);
+    }
 }
