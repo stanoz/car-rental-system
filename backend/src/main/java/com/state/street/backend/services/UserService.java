@@ -18,7 +18,12 @@ public class UserService {
         return this.userRepository.findByEmailAddress(emailAddress);
     }
 
-    public Long createNewUser(UserDto newUser) {
-        return this.userRepository.save(UserMapper.toEntity(newUser)).getId();
+    public User createNewUser(UserDto newUser) {
+        return this.userRepository.save(UserMapper.toEntity(newUser));
+    }
+
+    public boolean checkIfUserAlreadyExists(User user) {
+        Optional<User> userFromDb = this.getUserByEmail(user.getEmailAddress());
+        return userFromDb.map(value -> value.equals(user)).orElse(false);
     }
 }

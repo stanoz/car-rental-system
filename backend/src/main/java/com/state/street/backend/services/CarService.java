@@ -26,4 +26,10 @@ public class CarService {
         return carRepository.findById(carId)
                 .orElseThrow(() -> new CarNotFoundException(carId));
     }
+
+    public void decrementCarInStock(Long carId, int decrementBy) throws CarNotFoundException {
+        Car car = this.getCarById(carId);
+        car.setInStock(car.getInStock() - decrementBy);
+        this.carRepository.save(car);
+    }
 }
