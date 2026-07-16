@@ -2,7 +2,6 @@ package com.state.street.backend.car;
 
 import com.state.street.backend.exceptions.car.CarNotFoundException;
 import com.state.street.backend.model.dto.CarDto;
-import com.state.street.backend.model.dto.ConfirmationCarDto;
 import com.state.street.backend.model.entity.Car;
 import com.state.street.backend.model.entity.CarType;
 import com.state.street.backend.model.enums.CarCategory;
@@ -103,14 +102,15 @@ public class CarServiceTest {
 
         when(carRepository.findById(1L)).thenReturn(Optional.of(mockCar));
 
-        ConfirmationCarDto result = carService.getCarById(1L);
+        Car result = carService.getCarById(1L);
 
         assertAll(
                 () -> assertNotNull(result),
-                () -> assertEquals(mockCar.getId(), result.id()),
-                () -> assertEquals(mockCar.getBrand(), result.brand()),
-                () -> assertEquals(mockCar.getLicensePlate(), result.licensePlate()),
-                () -> assertEquals(CarCategory.VAN, result.type())
+                () -> assertEquals(mockCar.getId(), result.getId()),
+                () -> assertEquals(mockCar.getBrand(), result.getBrand()),
+                () -> assertEquals(mockCar.getLicensePlate(), result.getLicensePlate()),
+                () -> assertEquals(CarCategory.VAN, result.getType().getType()),
+                () -> assertEquals(mockCar.getInStock(), result.getInStock())
         );
     }
 
