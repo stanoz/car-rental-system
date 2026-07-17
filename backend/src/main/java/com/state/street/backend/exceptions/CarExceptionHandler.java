@@ -2,6 +2,7 @@ package com.state.street.backend.exceptions;
 
 import com.state.street.backend.exceptions.car.CarNotAvailableException;
 import com.state.street.backend.exceptions.car.CarNotFoundException;
+import com.state.street.backend.exceptions.car.InvalidCarStockAmountException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,5 +22,11 @@ public class CarExceptionHandler {
     public ResponseEntity<String> handleCarNotAvailableException(CarNotFoundException exception) {
         log.error(exception.getMessage());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(exception.getMessage());
+    }
+
+    @ExceptionHandler(InvalidCarStockAmountException.class)
+    public ResponseEntity<String> handleInvalidCarStockAmountException(InvalidCarStockAmountException exception) {
+        log.error(exception.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
     }
 }

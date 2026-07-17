@@ -2,6 +2,7 @@ package com.state.street.backend.services;
 
 import com.state.street.backend.exceptions.car.CarNotAvailableException;
 import com.state.street.backend.exceptions.car.CarNotFoundException;
+import com.state.street.backend.exceptions.car.InvalidCarStockAmountException;
 import com.state.street.backend.exceptions.reservation.InvalidDatesException;
 import com.state.street.backend.mappers.ReservationMapper;
 import com.state.street.backend.mappers.UserMapper;
@@ -26,13 +27,13 @@ public class ReservationService {
     private final CarService carService;
     private final UserService userService;
 
-    public void createReservation(CreateReservationDto createReservationDto) throws CarNotFoundException, CarNotAvailableException, InvalidDatesException {
+    public void createReservation(CreateReservationDto createReservationDto) throws CarNotFoundException, CarNotAvailableException, InvalidDatesException, InvalidCarStockAmountException {
         this.validateReservationDates(createReservationDto.startDateTime(), createReservationDto.endDateTime());
         Car selectedCar = this.carService.getCarById(createReservationDto.carId());
         if (selectedCar.getInStock() == 0) {
             throw new CarNotAvailableException();
         }
-        this.carService.decrementCarInStock(createReservationDto.carId(), 1);
+        selectedCar = this.carService.decrementCarInStock(createReservationDto.carId(), 1);
         User userEntity = UserMapper.toEntity(createReservationDto.user());
         if (!this.userService.checkIfUserAlreadyExists(userEntity)) {
             userEntity = this.userService.createNewUser(createReservationDto.user());

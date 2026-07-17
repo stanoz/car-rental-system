@@ -1,6 +1,7 @@
 package com.state.street.backend.services;
 
 import com.state.street.backend.exceptions.car.CarNotFoundException;
+import com.state.street.backend.exceptions.car.InvalidCarStockAmountException;
 import com.state.street.backend.mappers.CarMapper;
 import com.state.street.backend.model.dto.CarDto;
 import com.state.street.backend.model.entity.Car;
@@ -27,9 +28,12 @@ public class CarService {
                 .orElseThrow(() -> new CarNotFoundException(carId));
     }
 
-    public void decrementCarInStock(Long carId, int decrementBy) throws CarNotFoundException {
+    public Car decrementCarInStock(Long carId, int decrementBy) throws CarNotFoundException, InvalidCarStockAmountException {
         Car car = this.getCarById(carId);
+        if (car.getInStock() - decrementBy < 0) {
+            throw new InvalidCarStockAmountException(decrementBy);
+        }
         car.setInStock(car.getInStock() - decrementBy);
-        this.carRepository.save(car);
+        return this.carRepository.save(car);
     }
 }
