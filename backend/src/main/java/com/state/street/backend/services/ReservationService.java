@@ -18,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -28,6 +27,7 @@ public class ReservationService {
     private final ReservationRepository reservationRepository;
     private final CarService carService;
     private final UserService userService;
+    private final ReservationCostCalculatorService reservationCostCalculatorService;
 
     public void createReservation(CreateReservationDto createReservationDto) throws CarNotFoundException, CarNotAvailableException, InvalidDatesException, InvalidCarStockAmountException, UserNotFoundException {
         this.validateReservationDates(createReservationDto.startDateTime(), createReservationDto.endDateTime());
@@ -45,7 +45,7 @@ public class ReservationService {
         }
         Reservation reservationEntity = ReservationMapper
                 .toEntity(createReservationDto.startDateTime(), createReservationDto.endDateTime(), selectedCar, userEntity);
-        BigDecimal totalReservationCost = this.calculateReservationCost(createReservationDto.startDateTime(), createReservationDto.endDateTime(), selectedCar.getCostPerDay());
+        BigDecimal totalReservationCost = this.reservationCostCalculatorService.calculate(createReservationDto.startDateTime(), createReservationDto.endDateTime(), selectedCar.getCostPerDay());
         reservationEntity.setCost(totalReservationCost);
         reservationEntity.setPaymentStatus(PaymentStatus.PAID);
         reservationEntity.setReservationStatus(ReservationStatus.OPEN);
@@ -61,8 +61,4 @@ public class ReservationService {
         }
     }
 
-    private BigDecimal calculateReservationCost(LocalDateTime start, LocalDateTime end, BigDecimal carCostPerDay) {
-        float durationInDays = (float) Duration.between(start, end).toHours() / 24;
-        return new BigDecimal(durationInDays * carCostPerDay.floatValue());
-    }
 }
