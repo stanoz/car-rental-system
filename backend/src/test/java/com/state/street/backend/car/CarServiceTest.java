@@ -178,4 +178,32 @@ public class CarServiceTest {
 
         assertThrows(InvalidCarStockAmountException.class, () -> carService.decrementCarInStock(1L, 5));
     }
+
+    @Test
+    void decrementCarInStockShouldDecrementByGivenValueWhenWhenInStockWillBeZero() throws InvalidCarStockAmountException, CarNotFoundException {
+        CarType mockCarType = CarType.builder()
+                .id(1L)
+                .type(CarCategory.VAN)
+                .build();
+        Car mockCar = Car.builder()
+                .id(1L)
+                .brand("brand")
+                .inStock(1)
+                .licensePlate("1234")
+                .type(mockCarType)
+                .costPerDay(new BigDecimal(1))
+                .build();
+
+        when(carRepository.findById(1L)).thenReturn(Optional.of(mockCar));
+        when(carRepository.save(any(Car.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        Car result = carService.decrementCarInStock(1L, 1);
+
+        assertAll(
+                () -> assertNotNull(result),
+                () -> assertEquals(0, result.getInStock()),
+                () -> verify(carRepository).findById(1L),
+                () -> verify(carRepository).save(mockCar)
+        );
+    }
 }
