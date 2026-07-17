@@ -1,6 +1,7 @@
 package com.state.street.backend.car;
 
 import com.state.street.backend.exceptions.car.CarNotFoundException;
+import com.state.street.backend.exceptions.car.InvalidCarStockAmountException;
 import com.state.street.backend.model.dto.CarDto;
 import com.state.street.backend.model.entity.Car;
 import com.state.street.backend.model.entity.CarType;
@@ -21,6 +22,8 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -126,5 +129,53 @@ public class CarServiceTest {
         when(carRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(CarNotFoundException.class, () -> carService.getCarById(1L));
+    }
+
+    @Test
+    void decrementCarInStockShouldDecrementByGivenValueWhenPossible() throws InvalidCarStockAmountException, CarNotFoundException {
+        CarType mockCarType = CarType.builder()
+                .id(1L)
+                .type(CarCategory.VAN)
+                .build();
+        Car mockCar = Car.builder()
+                .id(1L)
+                .brand("brand")
+                .inStock(3)
+                .licensePlate("1234")
+                .type(mockCarType)
+                .costPerDay(new BigDecimal(1))
+                .build();
+
+        when(carRepository.findById(1L)).thenReturn(Optional.of(mockCar));
+        when(carRepository.save(any(Car.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        Car result = carService.decrementCarInStock(1L, 2);
+
+        assertAll(
+                () -> assertNotNull(result),
+                () -> assertEquals(1, result.getInStock()),
+                () -> verify(carRepository).findById(1L),
+                () -> verify(carRepository).save(mockCar)
+        );
+    }
+
+    @Test
+    void decrementCarInStockShouldThrowInvalidCarStockAmountExceptionWhenInStockWillBeLowerThanZero() {
+        CarType mockCarType = CarType.builder()
+                .id(1L)
+                .type(CarCategory.VAN)
+                .build();
+        Car mockCar = Car.builder()
+                .id(1L)
+                .brand("brand")
+                .inStock(1)
+                .licensePlate("1234")
+                .type(mockCarType)
+                .costPerDay(new BigDecimal(1))
+                .build();
+
+        when(carRepository.findById(1L)).thenReturn(Optional.of(mockCar));
+
+        assertThrows(InvalidCarStockAmountException.class, () -> carService.decrementCarInStock(1L, 5));
     }
 }
