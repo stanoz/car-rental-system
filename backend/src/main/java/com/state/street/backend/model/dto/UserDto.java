@@ -1,5 +1,8 @@
 package com.state.street.backend.model.dto;
 
+import lombok.Builder;
+
+@Builder
 public record UserDto(
         String firstName,
         String lastName,
