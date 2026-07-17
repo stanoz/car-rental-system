@@ -18,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -28,9 +27,10 @@ public class ReservationService {
     private final CarService carService;
     private final UserService userService;
     private final ReservationCostCalculatorService reservationCostCalculatorService;
+    private final ValidationService validationService;
 
     public void createReservation(CreateReservationDto createReservationDto) throws CarNotFoundException, CarNotAvailableException, InvalidDatesException, InvalidCarStockAmountException, UserNotFoundException {
-        this.validateReservationDates(createReservationDto.startDateTime(), createReservationDto.endDateTime());
+        this.validationService.validateReservationDates(createReservationDto.startDateTime(), createReservationDto.endDateTime());
         Car selectedCar = this.carService.getCarById(createReservationDto.carId());
         if (selectedCar.getInStock() == 0) {
             throw new CarNotAvailableException();
@@ -50,15 +50,6 @@ public class ReservationService {
         reservationEntity.setPaymentStatus(PaymentStatus.PAID);
         reservationEntity.setReservationStatus(ReservationStatus.OPEN);
         this.reservationRepository.save(reservationEntity);
-    }
-
-    private void validateReservationDates(LocalDateTime start, LocalDateTime end) throws InvalidDatesException {
-        if (start.isAfter(end)) {
-            throw new InvalidDatesException("Start date must be before end date.");
-        }
-        if (start.isEqual(end)) {
-            throw new InvalidDatesException("Start date and end date cannot be the same.");
-        }
     }
 
 }
