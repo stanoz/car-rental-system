@@ -14,6 +14,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Entity(name = "cars")
 @Builder
 @AllArgsConstructor
@@ -36,4 +38,7 @@ public class Car {
 
     @Column(nullable = false)
     private String licensePlate;
+
+    @Column(nullable = false)
+    private BigDecimal costPerDay;
 }

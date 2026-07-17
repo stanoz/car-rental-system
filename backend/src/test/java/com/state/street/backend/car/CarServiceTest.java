@@ -13,6 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,6 +47,7 @@ public class CarServiceTest {
                 .inStock(1)
                 .licensePlate("1234")
                 .type(mockCarType1)
+                .costPerDay(new BigDecimal(1))
                 .build();
         Car mockCar2 = Car.builder()
                 .id(2L)
@@ -53,6 +55,7 @@ public class CarServiceTest {
                 .inStock(12)
                 .licensePlate("5678")
                 .type(mockCarType2)
+                .costPerDay(new BigDecimal(2))
                 .build();
 
         when(carRepository.findAll()).thenReturn(List.of(mockCar1, mockCar2));
@@ -67,10 +70,12 @@ public class CarServiceTest {
                 () -> assertEquals(mockCar1.getBrand(), carResult1.brand()),
                 () -> assertEquals(mockCar1.getInStock(), carResult1.inStock()),
                 () -> assertEquals(CarCategory.SEDAN, carResult1.type()),
+                () -> assertEquals(mockCar1.getCostPerDay(), carResult1.costPerDay()),
                 () -> assertEquals(mockCar2.getId(), carResult2.id()),
                 () -> assertEquals(mockCar2.getBrand(), carResult2.brand()),
                 () -> assertEquals(mockCar2.getInStock(), carResult2.inStock()),
-                () -> assertEquals(CarCategory.SUV, carResult2.type())
+                () -> assertEquals(CarCategory.SUV, carResult2.type()),
+                () -> assertEquals(mockCar2.getCostPerDay(), carResult2.costPerDay())
         );
     }
 
@@ -98,6 +103,7 @@ public class CarServiceTest {
                 .inStock(1)
                 .licensePlate("1234")
                 .type(mockCarType)
+                .costPerDay(new BigDecimal(1))
                 .build();
 
         when(carRepository.findById(1L)).thenReturn(Optional.of(mockCar));
@@ -110,7 +116,8 @@ public class CarServiceTest {
                 () -> assertEquals(mockCar.getBrand(), result.getBrand()),
                 () -> assertEquals(mockCar.getLicensePlate(), result.getLicensePlate()),
                 () -> assertEquals(CarCategory.VAN, result.getType().getType()),
-                () -> assertEquals(mockCar.getInStock(), result.getInStock())
+                () -> assertEquals(mockCar.getInStock(), result.getInStock()),
+                () -> assertEquals(mockCar.getCostPerDay(), result.getCostPerDay())
         );
     }
 

@@ -13,6 +13,7 @@ public class CarMapper {
                 .brand(carEntity.getBrand())
                 .type(carEntity.getType().getType())
                 .inStock(carEntity.getInStock())
+                .costPerDay(carEntity.getCostPerDay())
                 .build();
     }
 
