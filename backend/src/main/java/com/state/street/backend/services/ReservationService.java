@@ -4,6 +4,7 @@ import com.state.street.backend.exceptions.car.CarNotAvailableException;
 import com.state.street.backend.exceptions.car.CarNotFoundException;
 import com.state.street.backend.exceptions.car.InvalidCarStockAmountException;
 import com.state.street.backend.exceptions.reservation.InvalidDatesException;
+import com.state.street.backend.exceptions.user.UserNotFoundException;
 import com.state.street.backend.mappers.ReservationMapper;
 import com.state.street.backend.mappers.UserMapper;
 import com.state.street.backend.model.dto.CreateReservationDto;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -27,16 +29,19 @@ public class ReservationService {
     private final CarService carService;
     private final UserService userService;
 
-    public void createReservation(CreateReservationDto createReservationDto) throws CarNotFoundException, CarNotAvailableException, InvalidDatesException, InvalidCarStockAmountException {
+    public void createReservation(CreateReservationDto createReservationDto) throws CarNotFoundException, CarNotAvailableException, InvalidDatesException, InvalidCarStockAmountException, UserNotFoundException {
         this.validateReservationDates(createReservationDto.startDateTime(), createReservationDto.endDateTime());
         Car selectedCar = this.carService.getCarById(createReservationDto.carId());
         if (selectedCar.getInStock() == 0) {
             throw new CarNotAvailableException();
         }
         selectedCar = this.carService.decrementCarInStock(createReservationDto.carId(), 1);
-        User userEntity = UserMapper.toEntity(createReservationDto.user());
-        if (!this.userService.checkIfUserAlreadyExists(userEntity)) {
+        User userEntity;
+        Optional<Long> existingUserId = this.userService.checkIfUserAlreadyExists(UserMapper.toEntity(createReservationDto.user()));
+        if (existingUserId.isEmpty()) {
             userEntity = this.userService.createNewUser(createReservationDto.user());
+        } else {
+            userEntity = this.userService.getUserById(existingUserId.get());
         }
         Reservation reservationEntity = ReservationMapper
                 .toEntity(createReservationDto.startDateTime(), createReservationDto.endDateTime(), selectedCar, userEntity);
