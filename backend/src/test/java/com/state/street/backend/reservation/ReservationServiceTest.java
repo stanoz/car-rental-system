@@ -4,12 +4,16 @@ import com.state.street.backend.exceptions.car.CarNotAvailableException;
 import com.state.street.backend.exceptions.car.CarNotFoundException;
 import com.state.street.backend.exceptions.car.InvalidCarStockAmountException;
 import com.state.street.backend.exceptions.reservation.InvalidDatesException;
+import com.state.street.backend.exceptions.reservation.ReservationNotFoundException;
 import com.state.street.backend.exceptions.user.UserNotFoundException;
 import com.state.street.backend.model.dto.CreateReservationDto;
+import com.state.street.backend.model.dto.ReservationDto;
 import com.state.street.backend.model.dto.UserDto;
 import com.state.street.backend.model.entity.Car;
+import com.state.street.backend.model.entity.CarType;
 import com.state.street.backend.model.entity.Reservation;
 import com.state.street.backend.model.entity.User;
+import com.state.street.backend.model.enums.CarCategory;
 import com.state.street.backend.model.enums.PaymentStatus;
 import com.state.street.backend.model.enums.ReservationStatus;
 import com.state.street.backend.repositories.ReservationRepository;
@@ -32,6 +36,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -382,5 +387,76 @@ public class ReservationServiceTest {
 
         verifyNoInteractions(reservationCostCalculatorService);
         verify(reservationRepository, never()).save(any());
+    }
+
+    @Test
+    void getReservationByIdShouldReturnReservationWhenFound() throws ReservationNotFoundException {
+        LocalDateTime start = LocalDateTime.of(2026, 1, 1, 10, 0);
+        LocalDateTime end = start.plusDays(2);
+
+        CarType carType = CarType.builder()
+                .id(1L)
+                .type(CarCategory.SEDAN)
+                .build();
+
+        Car car = Car.builder()
+                .id(1L)
+                .brand("Brand")
+                .licensePlate("GD12345")
+                .costPerDay(BigDecimal.valueOf(100))
+                .type(carType)
+                .inStock(1)
+                .build();
+
+        User user = User.builder()
+                .id(1L)
+                .firstName("John")
+                .lastName("Doe")
+                .drivingLicenseId("DL123")
+                .emailAddress("john@example.com")
+                .phoneNumber("123456789")
+                .build();
+
+        Reservation reservation = Reservation.builder()
+                .id(1L)
+                .car(car)
+                .user(user)
+                .startDateTime(start)
+                .endDateTime(end)
+                .cost(BigDecimal.valueOf(200))
+                .paymentStatus(PaymentStatus.PAID)
+                .reservationStatus(ReservationStatus.OPEN)
+                .build();
+
+        when(reservationRepository.findById(1L)).thenReturn(Optional.of(reservation));
+
+        ReservationDto result = reservationService.getReservationById(1L);
+
+        assertAll(
+                () -> assertNotNull(result),
+                () -> assertEquals(reservation.getId(), result.id()),
+                () -> assertEquals(reservation.getStartDateTime(), result.startDateTime()),
+                () -> assertEquals(reservation.getEndDateTime(), result.endDateTime()),
+                () -> assertEquals(reservation.getCost(), result.totalCost()),
+                () -> assertEquals(reservation.getPaymentStatus(), result.paymentStatus()),
+
+                () -> assertEquals(reservation.getUser().getFirstName(), result.user().firstName()),
+                () -> assertEquals(reservation.getUser().getLastName(), result.user().lastName()),
+                () -> assertEquals(reservation.getUser().getDrivingLicenseId(), result.user().drivingLicenseId()),
+                () -> assertEquals(reservation.getUser().getEmailAddress(), result.user().emailAddress()),
+                () -> assertEquals(reservation.getUser().getPhoneNumber(), result.user().phoneNumber()),
+
+                () -> assertEquals(reservation.getCar().getBrand(), result.car().brand()),
+                () -> assertEquals(reservation.getCar().getType().getType(), result.car().type()),
+                () -> assertEquals(reservation.getCar().getLicensePlate(), result.car().licensePlate()),
+                () -> assertEquals(reservation.getCar().getCostPerDay(), result.car().costPerDay())
+        );
+    }
+
+    @Test
+    void getReservationByIdShouldThrowReservationNotFoundException() {
+        when(reservationRepository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(ReservationNotFoundException.class, () -> reservationService.getReservationById(1L));
     }
 }
