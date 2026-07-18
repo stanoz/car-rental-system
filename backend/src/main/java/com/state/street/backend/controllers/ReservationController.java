@@ -27,9 +27,9 @@ public class ReservationController {
     private final ReservationService reservationService;
 
     @PostMapping
-    public ResponseEntity<Void> createReservation(@Valid @RequestBody CreateReservationDto createReservationDto) throws UserNotFoundException, CarNotAvailableException, InvalidDatesException, InvalidCarStockAmountException, CarNotFoundException {
-        this.reservationService.createReservation(createReservationDto);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity<Long> createReservation(@Valid @RequestBody CreateReservationDto createReservationDto) throws UserNotFoundException, CarNotAvailableException, InvalidDatesException, InvalidCarStockAmountException, CarNotFoundException {
+        Long reservationId = this.reservationService.createReservation(createReservationDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(reservationId);
     }
 
     @GetMapping("/{id}")

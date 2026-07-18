@@ -31,7 +31,7 @@ public class ReservationService {
     private final ReservationCostCalculatorService reservationCostCalculatorService;
     private final ValidationService validationService;
 
-    public void createReservation(CreateReservationDto createReservationDto) throws CarNotFoundException, CarNotAvailableException, InvalidDatesException, InvalidCarStockAmountException, UserNotFoundException {
+    public Long createReservation(CreateReservationDto createReservationDto) throws CarNotFoundException, CarNotAvailableException, InvalidDatesException, InvalidCarStockAmountException, UserNotFoundException {
         this.validationService.validateReservationDates(createReservationDto.startDateTime(), createReservationDto.endDateTime());
         Car selectedCar = this.carService.getCarById(createReservationDto.carId());
         if (selectedCar.getInStock() == 0) {
@@ -51,7 +51,7 @@ public class ReservationService {
         reservationEntity.setCost(totalReservationCost);
         reservationEntity.setPaymentStatus(PaymentStatus.PAID);
         reservationEntity.setReservationStatus(ReservationStatus.OPEN);
-        this.reservationRepository.save(reservationEntity);
+        return this.reservationRepository.save(reservationEntity).getId();
     }
 
     public ReservationDto getReservationById(Long id) throws ReservationNotFoundException {
