@@ -19,10 +19,10 @@ public class CarMapper {
 
     public static ConfirmationCarDto toConfirmationCarDto(Car carEntity) {
         return ConfirmationCarDto.builder()
-                .id(carEntity.getId())
                 .brand(carEntity.getBrand())
                 .type(carEntity.getType().getType())
                 .licensePlate(carEntity.getLicensePlate())
+                .costPerDay(carEntity.getCostPerDay())
                 .build();
     }
 }

@@ -16,4 +16,14 @@ public class UserMapper {
                 .drivingLicenseId(userDto.drivingLicenseId())
                 .build();
     }
+
+    public static UserDto toDto(User userEntity) {
+        return UserDto.builder()
+                .firstName(userEntity.getFirstName())
+                .lastName(userEntity.getLastName())
+                .drivingLicenseId(userEntity.getDrivingLicenseId())
+                .emailAddress(userEntity.getEmailAddress())
+                .phoneNumber(userEntity.getPhoneNumber())
+                .build();
+    }
 }

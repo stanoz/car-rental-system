@@ -4,10 +4,12 @@ import com.state.street.backend.exceptions.car.CarNotAvailableException;
 import com.state.street.backend.exceptions.car.CarNotFoundException;
 import com.state.street.backend.exceptions.car.InvalidCarStockAmountException;
 import com.state.street.backend.exceptions.reservation.InvalidDatesException;
+import com.state.street.backend.exceptions.reservation.ReservationNotFoundException;
 import com.state.street.backend.exceptions.user.UserNotFoundException;
 import com.state.street.backend.mappers.ReservationMapper;
 import com.state.street.backend.mappers.UserMapper;
 import com.state.street.backend.model.dto.CreateReservationDto;
+import com.state.street.backend.model.dto.ReservationDto;
 import com.state.street.backend.model.entity.Car;
 import com.state.street.backend.model.entity.Reservation;
 import com.state.street.backend.model.entity.User;
@@ -50,6 +52,12 @@ public class ReservationService {
         reservationEntity.setPaymentStatus(PaymentStatus.PAID);
         reservationEntity.setReservationStatus(ReservationStatus.OPEN);
         this.reservationRepository.save(reservationEntity);
+    }
+
+    public ReservationDto getReservationById(Long id) throws ReservationNotFoundException {
+        return this.reservationRepository.findById(id)
+                .map(ReservationMapper::toDto)
+                .orElseThrow(() -> new ReservationNotFoundException(id));
     }
 
 }
