@@ -103,6 +103,17 @@ public class ReservationServiceTest {
                 .phoneNumber("123456789")
                 .build();
 
+        Reservation savedReservation = Reservation.builder()
+                .id(1L)
+                .car(car)
+                .user(user)
+                .startDateTime(start)
+                .endDateTime(end)
+                .cost(BigDecimal.valueOf(200))
+                .paymentStatus(PaymentStatus.PAID)
+                .reservationStatus(ReservationStatus.OPEN)
+                .build();
+
         when(carService.getCarById(1L)).thenReturn(car);
         when(carService.decrementCarInStock(1L, 1)).thenReturn(car);
 
@@ -112,7 +123,9 @@ public class ReservationServiceTest {
 
         when(reservationCostCalculatorService.calculate(start, end, car.getCostPerDay())).thenReturn(BigDecimal.valueOf(200));
 
-        reservationService.createReservation(dto);
+        when(reservationRepository.save(any(Reservation.class))).thenReturn(savedReservation);
+
+        Long reservationId = reservationService.createReservation(dto);
 
         verify(validationService).validateReservationDates(start, end);
         verify(reservationRepository).save(reservationCaptor.capture());
@@ -120,6 +133,7 @@ public class ReservationServiceTest {
         Reservation saved = reservationCaptor.getValue();
 
         assertAll(
+                () -> assertEquals(1L, reservationId),
                 () -> assertEquals(car, saved.getCar()),
                 () -> assertEquals(user, saved.getUser()),
                 () -> assertEquals(start, saved.getStartDateTime()),
@@ -170,6 +184,17 @@ public class ReservationServiceTest {
                 .phoneNumber("123456789")
                 .build();
 
+        Reservation savedReservation = Reservation.builder()
+                .id(1L)
+                .car(car)
+                .user(existingUser)
+                .startDateTime(start)
+                .endDateTime(end)
+                .cost(BigDecimal.valueOf(200))
+                .paymentStatus(PaymentStatus.PAID)
+                .reservationStatus(ReservationStatus.OPEN)
+                .build();
+
         when(carService.getCarById(1L)).thenReturn(car);
         when(carService.decrementCarInStock(1L, 1)).thenReturn(car);
 
@@ -180,13 +205,16 @@ public class ReservationServiceTest {
         when(reservationCostCalculatorService.calculate(start, end, car.getCostPerDay()))
                 .thenReturn(BigDecimal.valueOf(200));
 
-        reservationService.createReservation(dto);
+        when(reservationRepository.save(any(Reservation.class))).thenReturn(savedReservation);
+
+        Long reservationId = reservationService.createReservation(dto);
 
         verify(reservationRepository).save(reservationCaptor.capture());
 
         Reservation saved = reservationCaptor.getValue();
 
         assertAll(
+                () -> assertEquals(1L, reservationId),
                 () -> assertEquals(existingUser, saved.getUser()),
                 () -> assertEquals(car, saved.getCar()),
                 () -> assertEquals(BigDecimal.valueOf(200), saved.getCost()),
