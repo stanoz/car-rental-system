@@ -43,7 +43,7 @@ public class ValidationServiceTest {
     @Test
     void validateReservationDatesShouldThrowWhenStartDateEqualsEndDate() {
         LocalDateTime start = LocalDateTime.of(2026, 1, 1, 10, 0);
-        LocalDateTime end = LocalDateTime.of(2026, 1, 1, 10, 0);;
+        LocalDateTime end = LocalDateTime.of(2026, 1, 1, 10, 0);
 
         InvalidDatesException exception = assertThrows(
                 InvalidDatesException.class,
