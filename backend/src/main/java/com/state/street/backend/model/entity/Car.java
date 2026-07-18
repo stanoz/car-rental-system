@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 @Entity(name = "cars")
 @Builder
@@ -41,4 +42,15 @@ public class Car {
 
     @Column(nullable = false)
     private BigDecimal costPerDay;
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Car car)) return false;
+        return inStock == car.inStock && Objects.equals(id, car.id) && Objects.equals(type, car.type) && Objects.equals(brand, car.brand) && Objects.equals(licensePlate, car.licensePlate) && Objects.equals(costPerDay, car.costPerDay);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, type, inStock, brand, licensePlate, costPerDay);
+    }
 }
