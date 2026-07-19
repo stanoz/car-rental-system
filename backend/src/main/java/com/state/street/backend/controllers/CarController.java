@@ -6,6 +6,7 @@ import com.state.street.backend.services.CarService;
 import com.state.street.backend.services.CarTypeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,6 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping(("/cars"))
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:5173")
 public class CarController {
     private final CarService carService;
     private final CarTypeService carTypeService;
