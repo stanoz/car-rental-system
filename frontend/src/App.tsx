@@ -1,9 +1,13 @@
-import './App.css'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 function App() {
 
+  const queryClient = new QueryClient();
+
   return (
-    <div className="text-3xl font-bold underline text-blue-500">Frontend</div>
+    <QueryClientProvider client={queryClient}>
+      <div className="text-3xl font-bold underline text-blue-500">Frontend</div>
+    </QueryClientProvider>
   )
 }
 
