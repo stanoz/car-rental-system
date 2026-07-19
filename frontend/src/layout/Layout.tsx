@@ -3,9 +3,11 @@ import Header from "./Header";
 
 export default function Layout() {
     return (
-        <main>
+        <div className="flex flex-col items-center bg-slate-800 w-screen h-screen">
             <Header />
-            <Outlet />
-        </main>
+            <main >
+                <Outlet />
+            </main>
+        </div>
     );
 }
