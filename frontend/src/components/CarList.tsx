@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query"
 import { getAllCars } from "../http/car";
 import LoadingSpinner from "./LoadingSpinner";
+import Car from "./Car";
 
 export default function CarList() {
     const { data, isError, isSuccess, isLoading } = useQuery({
@@ -11,7 +12,13 @@ export default function CarList() {
         <>
             {isError && <p className="text-2xl text-red-700">Failed to fetch cars!</p>}
             {isLoading && <LoadingSpinner />}
-            {isSuccess && <p>cars list</p>}
+            {isSuccess && (
+                <ul>
+                    {data.map(car => (
+                        <li key={car.id}><Car car={car} /></li>
+                    ))}
+                </ul>
+            )}
         </>
     )
 }
