@@ -13,7 +13,7 @@ export default function CarList() {
             {isError && <p className="text-2xl text-red-700">Failed to fetch cars!</p>}
             {isLoading && <LoadingSpinner />}
             {isSuccess && (
-                <ul>
+                <ul className="flex flex-col space-y-8 mt-10">
                     {data.map(car => (
                         <li key={car.id}><Car car={car} /></li>
                     ))}
