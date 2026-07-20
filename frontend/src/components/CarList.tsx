@@ -13,11 +13,14 @@ export default function CarList() {
             {isError && <p className="text-2xl text-red-700">Failed to fetch cars!</p>}
             {isLoading && <LoadingSpinner />}
             {isSuccess && (
-                <ul className="flex flex-col space-y-8 mt-10">
-                    {data.map(car => (
-                        <li key={car.id}><Car car={car} /></li>
-                    ))}
-                </ul>
+                <>
+                    <h3 className="text-center text-3xl text-cyan-50">Select a car</h3>
+                    <ul className="flex flex-col space-y-8 mt-10">
+                        {data.map(car => (
+                            <li key={car.id}><Car car={car} /></li>
+                        ))}
+                    </ul>
+                </>
             )}
         </>
     )
