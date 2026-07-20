@@ -1,5 +1,8 @@
 import { useNavigate } from "react-router";
 import type { CarDto } from "../model/car";
+import useDispatchTyped from "../hooks/useDispatchTyped";
+import { carActions } from "../redux/car";
+import { priceFormatter } from "../utils/currency";
 
 type CarProps = {
     car: CarDto
@@ -9,7 +12,10 @@ export default function Car({ car }: CarProps) {
 
     const navigate = useNavigate();
 
+    const dispatch = useDispatchTyped();
+
     const handleOnClickCar = () => {
+        dispatch(carActions.setCar(car));
         navigate("/create-reservation");
     }
 
@@ -20,7 +26,7 @@ export default function Car({ car }: CarProps) {
                 <span>Brand: {car.brand}</span>
             </div>
             <div className="flex flex-col items-start">
-                <span>Cost per day: {car.costPerDay}</span>
+                <span>Cost per day: {priceFormatter.format(car.costPerDay)}</span>
                 <span>Available: {car.inStock}</span>
             </div>
         </div>
