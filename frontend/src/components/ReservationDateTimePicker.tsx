@@ -2,13 +2,17 @@ import { useEffect, useState } from "react";
 import { times } from "../utils/times";
 import useDispatchTyped from "../hooks/useDispatchTyped";
 import { createReservationActions } from "../redux/create-reservation";
+import useSelectorTyped from "../hooks/useSelectorTyped";
 
 export default function ReservationDateTimePicker() {
+
+    const { dates } = useSelectorTyped(state => state.createReservation);
+
     const [values, setValues] = useState({
-        fromDate: "",
-        fromTime: "",
-        toDate: "",
-        toTime: "",
+        fromDate: dates.fromDate,
+        fromTime: dates.fromTime,
+        toDate: dates.toDate,
+        toTime: dates.toTime,
     });
 
     const dispatch = useDispatchTyped();
@@ -35,7 +39,7 @@ export default function ReservationDateTimePicker() {
                 message: "Start date cannot be after the End date.",
             });
             dispatch(createReservationActions.setStepNotCompleted());
-            return;
+            return false;
         }
 
         if (start.getTime() === end.getTime()) {
@@ -44,7 +48,7 @@ export default function ReservationDateTimePicker() {
                 message: "Start date and End date cannot be exactly the same.",
             });
             dispatch(createReservationActions.setStepNotCompleted());
-            return;
+            return false;
         }
 
         setError({
@@ -52,6 +56,7 @@ export default function ReservationDateTimePicker() {
             message: "",
         });
         dispatch(createReservationActions.completeStep());
+        return true;
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -78,7 +83,9 @@ export default function ReservationDateTimePicker() {
         const start = new Date(`${fromDate}T${fromTime}`);
         const end = new Date(`${toDate}T${toTime}`);
 
-        validateDates(start, end);
+        if (validateDates(start, end)) {
+            dispatch(createReservationActions.setDates(values));
+        }
     }, [values]);
 
     return (
