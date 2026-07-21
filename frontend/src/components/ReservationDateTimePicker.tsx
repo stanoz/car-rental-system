@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { times } from "../utils/times";
+import useDispatchTyped from "../hooks/useDispatchTyped";
+import { createReservationActions } from "../redux/create-reservation";
 
 export default function ReservationDateTimePicker() {
     const [values, setValues] = useState({
@@ -8,6 +10,18 @@ export default function ReservationDateTimePicker() {
         toDate: "",
         toTime: "",
     });
+
+    const dispatch = useDispatchTyped();
+
+    useEffect(() => {
+        const { fromDate, fromTime, toDate, toTime } = values;
+        if (!fromDate || !fromTime || !toDate || !toTime) {
+            dispatch(createReservationActions.setStepNotCompleted());
+        } else {
+            dispatch(createReservationActions.completeStep());
+        }
+
+    }, []);
 
     const [error, setError] = useState({
         isError: false,
@@ -20,6 +34,7 @@ export default function ReservationDateTimePicker() {
                 isError: true,
                 message: "Start date cannot be after the End date.",
             });
+            dispatch(createReservationActions.setStepNotCompleted());
             return;
         }
 
@@ -28,6 +43,7 @@ export default function ReservationDateTimePicker() {
                 isError: true,
                 message: "Start date and End date cannot be exactly the same.",
             });
+            dispatch(createReservationActions.setStepNotCompleted());
             return;
         }
 
@@ -35,6 +51,7 @@ export default function ReservationDateTimePicker() {
             isError: false,
             message: "",
         });
+        dispatch(createReservationActions.completeStep());
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {

@@ -1,8 +1,17 @@
+import { useEffect } from "react";
 import useSelectorTyped from "../hooks/useSelectorTyped";
 import { priceFormatter } from "../utils/currency";
+import useDispatchTyped from "../hooks/useDispatchTyped";
+import { createReservationActions } from "../redux/create-reservation";
 
 export default function CarConfirmation() {
     const car = useSelectorTyped(state => state.car.car);
+
+    const dispatch = useDispatchTyped();
+
+    useEffect(() => {
+        dispatch(createReservationActions.completeStep());
+    }, []);
 
     return (
         <div className="flex flex-col items-center text-cyan-50 mt-18">
