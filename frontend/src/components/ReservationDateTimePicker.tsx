@@ -9,10 +9,7 @@ export default function ReservationDateTimePicker() {
     const { dates } = useSelectorTyped(state => state.createReservation);
 
     const [values, setValues] = useState({
-        fromDate: dates.fromDate,
-        fromTime: dates.fromTime,
-        toDate: dates.toDate,
-        toTime: dates.toTime,
+       ...dates
     });
 
     const dispatch = useDispatchTyped();
