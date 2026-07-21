@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { times } from "../utils/times";
 
 export default function ReservationDateTimePicker() {
@@ -9,6 +9,34 @@ export default function ReservationDateTimePicker() {
         toTime: "",
     });
 
+    const [error, setError] = useState({
+        isError: false,
+        message: ""
+    });
+
+    const validateDates = (start: Date, end: Date) => {
+        if (start > end) {
+            setError({
+                isError: true,
+                message: "Start date cannot be after the End date.",
+            });
+            return;
+        }
+
+        if (start.getTime() === end.getTime()) {
+            setError({
+                isError: true,
+                message: "Start date and End date cannot be exactly the same.",
+            });
+            return;
+        }
+
+        setError({
+            isError: false,
+            message: "",
+        });
+    };
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         setValues(prev => (
@@ -18,6 +46,23 @@ export default function ReservationDateTimePicker() {
             }
         ));
     }
+
+    useEffect(() => {
+        const { fromDate, fromTime, toDate, toTime } = values;
+
+        if (!fromDate || !fromTime || !toDate || !toTime) {
+            setError({
+                isError: false,
+                message: "",
+            });
+            return;
+        }
+
+        const start = new Date(`${fromDate}T${fromTime}`);
+        const end = new Date(`${toDate}T${toTime}`);
+
+        validateDates(start, end);
+    }, [values]);
 
     return (
         <div className="flex flex-col gap-6 rounded-lg p-6 text-cyan-50 items-center">
@@ -34,8 +79,12 @@ export default function ReservationDateTimePicker() {
                     />
                     <select
                         name="fromTime"
+                        value={values.fromTime}
                         onChange={handleChange}
-                        className="rounded border px-3 py-2">
+                        className="rounded border px-3 py-2"
+                    >
+                        <option value="">Select time</option>
+
                         {times.map((time) => (
                             <option key={time} value={time}>
                                 {time}
@@ -57,8 +106,12 @@ export default function ReservationDateTimePicker() {
 
                     <select
                         name="toTime"
+                        value={values.toTime}
                         onChange={handleChange}
-                        className="rounded border px-3 py-2">
+                        className="rounded border px-3 py-2"
+                    >
+                        <option value="">Select time</option>
+
                         {times.map((time) => (
                             <option key={time} value={time}>
                                 {time}
@@ -66,6 +119,9 @@ export default function ReservationDateTimePicker() {
                         ))}
                     </select>
                 </div>
+            </div>
+            <div className="h-12">
+                {error.isError && <p className="text-red-600 text-xl">{error.message}</p>}
             </div>
         </div>
     );
