@@ -21,7 +21,7 @@ export default function UserData() {
     }
 
     return (
-        <div>
+        <div className="flex flex-col items-center mb-4 mt-8">
             <Input
                 id="first-name"
                 name="firstName"
