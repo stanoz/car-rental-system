@@ -4,6 +4,7 @@ import { getReservationById } from "../http/reservation";
 import LoadingSpinner from "./LoadingSpinner";
 import { priceFormatter } from "../utils/currency";
 import { formatDate, formatTime } from "../utils/times";
+import { useNavigate } from "react-router";
 
 export default function ReservationConfirmation() {
     const { id } = useSelectorTyped(state => state.reservationConfirmation);
@@ -11,6 +12,12 @@ export default function ReservationConfirmation() {
         queryKey: ['reservation-confirmation', id],
         queryFn: () => getReservationById(id)
     });
+
+    const navigate = useNavigate();
+
+    const handleBackToCarList = () => {
+        navigate("/");
+    }
 
     return (
         <div className="text-cyan-50 flex flex-col items-center">
@@ -56,6 +63,12 @@ export default function ReservationConfirmation() {
                     </section>
                 </main>
             )}
+            <button
+                type="button"
+                onClick={handleBackToCarList}
+                className="ml-0 mr-auto bg-blue-800 hover:bg-blue-900 px-4 py-2 rounded-md hover:cursor-pointer">
+                Return to cars list
+            </button>
         </div>
     );
 }
