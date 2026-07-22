@@ -37,8 +37,25 @@ export const createReservationSlice = createSlice({
         setDates(state, action: PayloadAction<CreateReservationDates>) {
             state.dates = action.payload;
         },
+        setDatesToDefault(state) {
+            state.dates = {
+                fromDate: "",
+                fromTime: "",
+                toDate: "",
+                toTime: "",
+            }
+        },
         setUserData(state, action: PayloadAction<CreateReservationUserData>) {
             state.user = action.payload;
+        },
+        setUserDataToDefault(state) {
+            state.user = {
+                firstName: "",
+                lastName: "",
+                emailAddress: "",
+                phoneNumber: "",
+                drivingLicenseId: ""
+            }
         }
     }
 });

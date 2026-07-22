@@ -9,7 +9,7 @@ type CarInitialState = {
 
 const initialState: CarInitialState = {
     car: {
-        id: "",
+        id: 0,
         brand: "",
         costPerDay: 0,
         inStock: 0,
@@ -22,6 +22,15 @@ export const carSlice = createSlice({
     reducers: {
         setCar(state, action: PayloadAction<CarDto>) {
             state.car = action.payload
+        },
+        setCarStateToDefault(state) {
+            state.car = {
+                id: 0,
+                brand: "",
+                costPerDay: 0,
+                inStock: 0,
+                type: CarCategory.SEDAN
+            }
         }
     }
 })
