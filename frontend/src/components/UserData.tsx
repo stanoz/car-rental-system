@@ -76,43 +76,46 @@ export default function UserData() {
     }, [values]);
 
     return (
-        <div className="flex flex-col items-center mb-4 mt-8">
-            <Input
-                id="first-name"
-                name="firstName"
-                label="First name"
-                value={values.firstName}
-                onChange={handleChange}
-                errorMessage={errorMessages.firstName} />
-            <Input
-                id="last-name"
-                name="lastName"
-                label="Last name"
-                value={values.lastName}
-                onChange={handleChange}
-                errorMessage={errorMessages.lastName} />
-            <Input
-                id="email"
-                name="emailAddress"
-                type="email"
-                label="Email address"
-                value={values.emailAddress}
-                onChange={handleChange}
-                errorMessage={errorMessages.emailAddress} />
-            <Input
-                id="phone"
-                name="phoneNumber"
-                label="Phone number"
-                value={values.phoneNumber}
-                onChange={handleChange}
-                errorMessage={errorMessages.phoneNumber} />
-            <Input
-                id="driving-license"
-                name="drivingLicenseId"
-                label="Driving license ID"
-                value={values.drivingLicenseId}
-                onChange={handleChange}
-                errorMessage={errorMessages.drivingLicenseId} />
+        <div className="flex flex-col items-center mt-8">
+            <h2 className="text-3xl text-cyan-50">Your data</h2>
+            <div className="flex flex-col items-center mb-4 mt-8">
+                <Input
+                    id="first-name"
+                    name="firstName"
+                    label="First name"
+                    value={values.firstName}
+                    onChange={handleChange}
+                    errorMessage={errorMessages.firstName} />
+                <Input
+                    id="last-name"
+                    name="lastName"
+                    label="Last name"
+                    value={values.lastName}
+                    onChange={handleChange}
+                    errorMessage={errorMessages.lastName} />
+                <Input
+                    id="email"
+                    name="emailAddress"
+                    type="email"
+                    label="Email address"
+                    value={values.emailAddress}
+                    onChange={handleChange}
+                    errorMessage={errorMessages.emailAddress} />
+                <Input
+                    id="phone"
+                    name="phoneNumber"
+                    label="Phone number"
+                    value={values.phoneNumber}
+                    onChange={handleChange}
+                    errorMessage={errorMessages.phoneNumber} />
+                <Input
+                    id="driving-license"
+                    name="drivingLicenseId"
+                    label="Driving license ID"
+                    value={values.drivingLicenseId}
+                    onChange={handleChange}
+                    errorMessage={errorMessages.drivingLicenseId} />
+            </div>
         </div>
     );
 }
