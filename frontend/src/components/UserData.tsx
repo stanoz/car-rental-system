@@ -39,6 +39,7 @@ export default function UserData() {
             <Input
                 id="email"
                 name="emailAddress"
+                type="email"
                 label="Email address"
                 value={values.emailAddress}
                 onChange={handleChange}

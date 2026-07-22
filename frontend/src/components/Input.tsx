@@ -5,16 +5,17 @@ type InputProps = {
     errorMessage: string,
     label: string,
     name: string,
+    type?: string
 }
 
-export default function Input({ value, onChange, errorMessage, label, id, name }: InputProps) {
+export default function Input({ value, onChange, errorMessage, label, id, name, type }: InputProps) {
     return (
         <div className="flex flex-col items-start text-cyan-50 text-xl">
             <label htmlFor={id} className="mb-2">{label}</label>
             <input 
             id={id} 
             name={name} 
-            type="text" 
+            type={type ?? "text"} 
             required value={value} 
             onChange={onChange} 
             className="border-cyan-50 border-1 rounded"
