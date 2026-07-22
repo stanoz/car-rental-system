@@ -1,19 +1,5 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-
-type CreateReservationDates = {
-    fromDate: string,
-    fromTime: string,
-    toDate: string,
-    toTime: string,
-}
-
-type CreateReservationUserData = {
-    firstName: string,
-    lastName: string,
-    emailAddress: string,
-    phoneNumber: string,
-    drivingLicenseId: string,
-}
+import type { CreateReservationDates, CreateReservationUserData } from "../model/reservation";
 
 type CreateReservationInitialState = {
     isStepCompleted: boolean,
