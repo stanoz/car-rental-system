@@ -7,3 +7,10 @@ export type CarDto = {
     costPerDay: number,
     type: CarCategory
 }
+
+export type ConfirmationCarDto = {
+    brand: string,
+    costPerDay: number,
+    type: CarCategory,
+    licensePlate: string
+}
