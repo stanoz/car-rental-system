@@ -1,7 +1,7 @@
 import type { CarCategory } from "./enum/car-category"
 
 export type CarDto = {
-    id: string,
+    id: number,
     brand: string,
     inStock: number,
     costPerDay: number,
