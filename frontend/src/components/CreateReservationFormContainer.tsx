@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Steps from "./Steps";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import CarConfirmation from "./CarConfirmation";
 import ReservationDateTimePicker from "./ReservationDateTimePicker";
 import useSelectorTyped from "../hooks/useSelectorTyped";
@@ -12,6 +12,7 @@ import useDispatchTyped from "../hooks/useDispatchTyped";
 import { carActions } from "../redux/car";
 import { createReservationActions } from "../redux/create-reservation";
 import LoadingSpinner from "./LoadingSpinner";
+import { reservationConfirmationActions } from "../redux/reservation-confirmation";
 
 const TOTAL_STEPS = 4;
 const commonClasses = "px-4 py-2 rounded-md hover:cursor-pointer";
@@ -25,6 +26,7 @@ export default function CreateReservationFormContainer() {
 
     const queryClient = useQueryClient();
     const dispatch = useDispatchTyped();
+    const navigate = useNavigate();
 
     const { isPending, mutateAsync } = useMutation({
         mutationKey: ["create-reservation", car, dates, user],
@@ -42,12 +44,13 @@ export default function CreateReservationFormContainer() {
             dispatch(carActions.setCarStateToDefault());
             dispatch(createReservationActions.setDatesToDefault());
             dispatch(createReservationActions.setUserDataToDefault());
-            //TODO:navigate to success component
+            navigate("/reservation-confirmation");
         }
     });
 
     const handleCreateReservation = async () => {
-        await mutateAsync();
+        const reservationId = await mutateAsync();
+        dispatch(reservationConfirmationActions.setReservationId(reservationId));
     }
 
     const handleClickNextStep = () => {
