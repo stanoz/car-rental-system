@@ -10,9 +10,5 @@ export async function createReservation(createReservationDto: CreateReservationD
 }
 
 export async function getReservationById(id: number): Promise<ConfirmedReservationDto> {
-    return (await axios.get(`${BASE_URL}/reservations`, {
-        params: {
-            id
-        }
-    })).data;
+    return (await axios.get(`${BASE_URL}/reservations/${id}`)).data;
 }
