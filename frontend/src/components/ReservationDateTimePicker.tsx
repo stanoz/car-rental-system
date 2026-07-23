@@ -3,13 +3,14 @@ import { times } from "../utils/times";
 import useDispatchTyped from "../hooks/useDispatchTyped";
 import { createReservationActions } from "../redux/create-reservation";
 import useSelectorTyped from "../hooks/useSelectorTyped";
+import { validateReservationDates } from "../utils/reservationValidation";
 
 export default function ReservationDateTimePicker() {
 
     const { dates } = useSelectorTyped(state => state.createReservation);
 
     const [values, setValues] = useState({
-       ...dates
+        ...dates
     });
 
     const dispatch = useDispatchTyped();
@@ -28,33 +29,6 @@ export default function ReservationDateTimePicker() {
         isError: false,
         message: ""
     });
-
-    const validateDates = (start: Date, end: Date) => {
-        if (start > end) {
-            setError({
-                isError: true,
-                message: "Start date cannot be after the End date.",
-            });
-            dispatch(createReservationActions.setStepNotCompleted());
-            return false;
-        }
-
-        if (start.getTime() === end.getTime()) {
-            setError({
-                isError: true,
-                message: "Start date and End date cannot be exactly the same.",
-            });
-            dispatch(createReservationActions.setStepNotCompleted());
-            return false;
-        }
-
-        setError({
-            isError: false,
-            message: "",
-        });
-        dispatch(createReservationActions.completeStep());
-        return true;
-    };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -80,9 +54,26 @@ export default function ReservationDateTimePicker() {
         const start = new Date(`${fromDate}T${fromTime}`);
         const end = new Date(`${toDate}T${toTime}`);
 
-        if (validateDates(start, end)) {
-            dispatch(createReservationActions.setDates(values));
+        const validationResult = validateReservationDates(start, end);
+
+        if (!validationResult.valid) {
+            setError({
+                isError: true,
+                message: validationResult.message,
+            });
+
+            dispatch(createReservationActions.setStepNotCompleted());
+            return;
         }
+
+        setError({
+            isError: false,
+            message: "",
+        });
+
+        dispatch(createReservationActions.completeStep());
+        dispatch(createReservationActions.setDates(values));
+
     }, [values]);
 
     return (
