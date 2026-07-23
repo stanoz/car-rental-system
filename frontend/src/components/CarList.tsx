@@ -15,11 +15,15 @@ export default function CarList() {
             {isSuccess && (
                 <>
                     <h3 className="text-center text-3xl text-cyan-50">Select a car</h3>
-                    <ul className="flex flex-col space-y-8 mt-10">
-                        {data.map(car => (
-                            <li key={car.id}><Car car={car} /></li>
-                        ))}
-                    </ul>
+                    {data.length > 0 ? (
+                        <ul className="flex flex-col space-y-8 mt-10">
+                            {data.map(car => (
+                                <li key={car.id}><Car car={car} /></li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <p className="text-center text-2xl text-cyan-50">There are no available cars.</p>
+                    )}
                 </>
             )}
         </>
