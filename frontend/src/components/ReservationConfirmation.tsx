@@ -66,7 +66,7 @@ export default function ReservationConfirmation() {
             <button
                 type="button"
                 onClick={handleBackToCarList}
-                className="ml-0 mr-auto bg-blue-800 hover:bg-blue-900 px-4 py-2 rounded-md hover:cursor-pointer">
+                className="mt-8 mx-auto bg-blue-800 hover:bg-blue-900 px-4 py-2 rounded-md hover:cursor-pointer">
                 Return to cars list
             </button>
         </div>
