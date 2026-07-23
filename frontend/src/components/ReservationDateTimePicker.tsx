@@ -80,7 +80,7 @@ export default function ReservationDateTimePicker() {
         <div className="flex flex-col gap-6 rounded-lg p-6 text-cyan-50 items-center">
             <h2 className="text-3xl">Select reservation date and time</h2>
             <div>
-                <h2 className="mb-2 text-lg font-semibold">From</h2>
+                <label className="mb-2 text-lg font-semibold">From</label>
                 <div className="flex gap-4">
                     <input
                         type="date"
@@ -106,7 +106,7 @@ export default function ReservationDateTimePicker() {
                 </div>
             </div>
             <div>
-                <h2 className="mb-2 text-lg font-semibold">To</h2>
+                <label className="mb-2 text-lg font-semibold">To</label>
                 <div className="flex gap-4">
                     <input
                         type="date"
