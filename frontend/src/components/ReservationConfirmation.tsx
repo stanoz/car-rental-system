@@ -29,6 +29,7 @@ export default function ReservationConfirmation() {
             {isSuccess && reservation && (
                 <main className="mt-6 flex flex-col items-center space-y-6">
                     <p className="text-2xl font-bolder">Reservation ID: {reservation.id}</p>
+                    <p className="text-2xl font-bolder">Total cost {priceFormatter.format(reservation.totalCost)}</p>
                     <section className="flex flex-col items-center">
                         <h3 className="text-2xl mb-2">Car</h3>
                         <div className="flex flex-col items-start space-y-1">
