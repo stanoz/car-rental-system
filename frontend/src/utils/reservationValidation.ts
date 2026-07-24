@@ -7,6 +7,15 @@ export function validateReservationDates(
     start: Date,
     end: Date
 ): ValidationResult {
+    const now = new Date();
+
+    if (start < now) {
+        return {
+            valid: false,
+            message: "Start date cannot be in the past.",
+        };
+    }
+
     if (start > end) {
         return {
             valid: false,
