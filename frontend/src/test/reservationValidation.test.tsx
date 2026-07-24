@@ -1,12 +1,28 @@
-import { describe, expect, it } from "vitest";
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vitest";
 import { validateReservationDates } from "../utils/reservationValidation";
+
+beforeEach(() => {
+  vi.useFakeTimers();
+  vi.setSystemTime(new Date("2026-07-20T12:00:00"));
+});
+
+afterEach(() => {
+  vi.useRealTimers();
+});
 
 describe("validateReservationDates tests", () => {
     it("rejects start date after end date", () => {
-        const result = validateReservationDates(
-            new Date("2026-07-10T10:00"),
-            new Date("2026-07-09T10:00")
-        );
+        const end = new Date();
+        const start = new Date(end);
+        start.setDate(end.getDate() + 1);
+        const result = validateReservationDates(start, end);
 
         expect(result.valid).toBe(false);
         expect(result.message).toBe(
@@ -14,10 +30,28 @@ describe("validateReservationDates tests", () => {
         );
     });
 
-    it("rejects identical start and end dates", () => {
-        const date = new Date("2026-07-10T10:00");
+    it("rejects start date before now", () => {
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
 
-        const result = validateReservationDates(date, date);
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+
+        const result = validateReservationDates(yesterday, tomorrow);
+
+        expect(result.valid).toBe(false);
+        expect(result.message).toBe(
+            "Start date cannot be in the past."
+        );
+    });
+
+    it("rejects identical start and end dates", () => {
+        const start = new Date();
+        start.setDate(start.getDate() + 1);
+
+        const end = new Date(start);
+
+        const result = validateReservationDates(start, end);
 
         expect(result.valid).toBe(false);
         expect(result.message).toBe(
@@ -26,10 +60,13 @@ describe("validateReservationDates tests", () => {
     });
 
     it("accepts a valid reservation period", () => {
-        const result = validateReservationDates(
-            new Date("2026-07-10T10:00"),
-            new Date("2026-07-11T10:00")
-        );
+        const start = new Date();
+        start.setDate(start.getDate() + 1);
+
+        const end = new Date(start);
+        end.setDate(end.getDate() + 2);
+
+        const result = validateReservationDates(start, end);
 
         expect(result).toEqual({
             valid: true,
