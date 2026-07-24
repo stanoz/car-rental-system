@@ -1,5 +1,6 @@
 import useSelectorTyped from "../hooks/useSelectorTyped";
 import { priceFormatter } from "../utils/currency";
+import { calculateReservationCost } from "../utils/reservation";
 
 export default function ReservationSummary() {
     const { dates, user } = useSelectorTyped(state => state.createReservation);
@@ -9,6 +10,13 @@ export default function ReservationSummary() {
         <div className="flex flex-col items-center text-cyan-50 text-xl my-8">
             <h2 className="text-3xl">Reservation data summary</h2>
             <main className="mt-6 flex flex-col items-center space-y-6">
+                <section>
+                    <h2 className="text-2xl font-bolder text-center">Total cost: {priceFormatter.format(calculateReservationCost(
+                        new Date(`${dates.fromDate}T${dates.fromTime}`),
+                        new Date(`${dates.toDate}T${dates.toTime}`),
+                        car.costPerDay
+                    ))}</h2>
+                </section>
                 <section className="flex flex-col items-center">
                     <h3 className="text-2xl mb-2">Car</h3>
                     <div className="flex flex-col items-start space-y-1">
