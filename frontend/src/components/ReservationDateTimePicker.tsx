@@ -87,7 +87,7 @@ export default function ReservationDateTimePicker() {
                         name="fromDate"
                         value={values.fromDate}
                         onChange={handleChange}
-                        className="rounded border px-3 py-2"
+                        className="rounded border px-3 py-2 [color-scheme:dark]"
                     />
                     <select
                         name="fromTime"
@@ -113,7 +113,7 @@ export default function ReservationDateTimePicker() {
                         name="toDate"
                         value={values.toDate}
                         onChange={handleChange}
-                        className="rounded border px-3 py-2"
+                        className="rounded border px-3 py-2 [color-scheme:dark]"
                     />
 
                     <select
